@@ -119,34 +119,26 @@ Questions outside the data (pests, diseases, irrigation, subsidies, weather fore
 
 ## 7. How to run
 
-### Option A: Use the live website (deployed on Netlify)
-Open the project link: **`https://<your-site>.netlify.app`** *(replace with your own Netlify link)*.
-Nothing to install. Netlify serves the app over **HTTPS**, which the browser needs for the 🎤 voice input.
+### Option A: Use the live website (GitHub Pages)
+Open the project link: **`https://<your-username>.github.io/cultivoice/`** *(replace with your own link)*.
+Nothing to install. GitHub Pages serves the app over **HTTPS**, which the browser needs for the 🎤 voice input.
 
-### Option B: Deploy your own copy on Netlify
+### Option B: Publish your own copy on GitHub Pages
 The app is a plain static website (HTML + JavaScript + JSON files), so there is **no build step** and no server.
+GitHub Pages can publish only from the top of a repository (or a `/docs` folder), so the app's files go at the top of a repo.
 
-**Easiest: drag and drop**
-1. Go to [app.netlify.com/drop](https://app.netlify.com/drop) (log in if asked).
-2. Drag the **`frontend`** folder (the one containing `index.html`, `chat_parser.js`, `chat_qa.js` and `model/`) onto the page.
-3. In about a minute you get a `https://….netlify.app` link. Under *Site configuration → Change site name* you can pick a nicer name such as `cultivoice`.
-4. To update later, open the site's **Deploys** tab and drag the updated `frontend` folder onto it again.
+1. On github.com click **New repository**, name it `cultivoice`, make it **Public**, and create it.
+2. Click **Add file → Upload files** and drag in the **contents** of the `frontend/` folder (not the folder itself):
+   `index.html`, `chat_parser.js`, `chat_qa.js` and the `model/` folder. Click **Commit changes**.
+3. Open **Settings → Pages**. Set Source to **Deploy from a branch**, Branch to **main**, folder to **/ (root)**, and click **Save**.
+4. After 1 to 2 minutes the site is live at `https://<your-username>.github.io/cultivoice/`.
+5. To update later, upload the changed files again (same names) and commit; the site refreshes by itself.
 
-**Using GitHub (auto-redeploys on every push)**
-1. Push the project to a GitHub repository.
-2. On Netlify choose **Add new site → Import an existing project** and pick the repository.
-3. Set **Base directory** to `frontend` and **Publish directory** to `frontend`. Leave **Build command** empty.
-4. Click **Deploy**.
+`index.html` must be at the top level of the repo, not inside a subfolder, otherwise the site shows a 404.
+The `model/` folder must contain `crop_rf.json`, `yield_gbm.json`, `fert_lr.json`, `metadata.json`, `yield_defaults.json`, `metrics.json` and `predict.js`.
 
-**Using the Netlify CLI instead**
-```
-npm i -g netlify-cli
-netlify login
-cd frontend
-netlify deploy --dir=. --prod
-```
-
-Only the `frontend/` folder is deployed. The Python code, datasets and charts are not needed by the website, because the trained models are already exported to `frontend/model/` as JSON.
+Only the app is published this way. The Python code, datasets and charts are not needed by the website, because the trained models are already exported to `model/` as JSON.
+For the full project (code, data, results, docs), keep it in a second repository, for example `cultivoice-project`.
 
 ### Option C: Run it on your own computer
 The page loads its model files with `fetch`, so it must be served over http. Double-clicking `index.html` will **not** work.
@@ -167,7 +159,7 @@ node tests/test_chat_qa.mjs         # 84 question tests
 ```
 
 ### If something does not work
-- **Blank page or "failed to load model":** you deployed the wrong folder (the site must be built from `frontend`, so `index.html` is at the top level), or you opened `index.html` by double-click.
+- **Blank page, 404 or "failed to load model":** `index.html` is not at the top level of the repo, the `model/` folder is missing or incomplete, or you opened `index.html` by double-click (use Live Server instead).
 - **Old version still showing after an update:** hard-refresh with Ctrl+Shift+R.
 - **🎤 not working:** use Chrome or Edge on the HTTPS link; some browsers (for example Firefox) do not support voice input.
 
