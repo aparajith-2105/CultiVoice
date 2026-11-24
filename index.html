@@ -109,6 +109,7 @@
   <h2 id="chatTitle"></h2><p class="muted" id="chatHint" style="margin:0 0 8px"></p>
   <div id="chatKnown" style="margin-bottom:6px"></div>
   <div class="row" style="margin-bottom:6px"><span class="muted" id="chatTry" style="font-size:13px"></span><span id="chatEx" class="row"></span></div>
+  <div class="row" style="margin-bottom:6px"><span class="muted" id="chatQTry" style="font-size:13px"></span><span id="chatQ" class="row"></span></div>
   <div id="chatLog" aria-live="polite"></div>
   <form class="chatrow" id="chatForm" autocomplete="off"><input type="text" id="chatIn" aria-label="message"><button type="button" class="ghost" id="chatMic">🎤</button><button class="primary" id="chatSend" type="submit"></button></form>
   <div class="row" style="margin-top:8px"><button class="ghost" id="chatReset" type="button"></button></div>
@@ -120,6 +121,7 @@
 <script type="module">
 import * as E from "./model/predict.js";
 import { parseMessage } from "./chat_parser.js";
+import { answerQuestion, SUGGEST, NO_MATCH } from "./chat_qa.js";
 const J = (n) => fetch("./model/" + n).then((r) => r.json());
 const [crop, yld, fert, meta, defs, metrics] = await Promise.all(["crop_rf.json", "yield_gbm.json", "fert_lr.json", "metadata.json", "yield_defaults.json", "metrics.json"].map(J));
 
@@ -290,20 +292,20 @@ function buildInfo() {
 
 /* ---------- chat (offline: reads numbers from a message, then uses the same crop model as the Crop advisor) ---------- */
 const CHAT = {
-  en: { tab: "Chat", title: "Ask in your own words", hint: "Type your soil and climate values, for example: N 90, P 42, K 43, temperature 21, humidity 82, pH 6.5, rainfall 203. This chat uses the same trained model as the Crop advisor, and works offline.",
-    ph: "Type your field values...", send: "Send", reset: "New field", tryEx: "Try an example", known: "Values so far",
+  en: { tab: "Chat", title: "Ask in your own words", hint: "Type your soil and climate values, or ask any question about crops, yields, prices, seasons, fertilizer or this model. Values example: N 90, P 42, K 43, temperature 21, humidity 82, pH 6.5, rainfall 203. Answers come from the project's own datasets and the same trained model as the Crop advisor. Works offline.",
+    ph: "Type your field values...", send: "Send", reset: "New field", tryEx: "Try an example", askQ: "Or ask a question", known: "Values so far",
     got: "Got", need: "Still needed", noNum: "I could not find any values. Please write them like “nitrogen 90, rainfall 200”. I need: N, P, K, temperature, humidity, pH and rainfall.",
     all: "I have all 7 values.", rec: "Recommended crops", why: "Why", open: "Open in Crop advisor", read: "🔊 Read aloud", more: "You can change any value, for example “rainfall 120”, and I will answer again.",
     invalid: (f, v) => `${f} = ${v} is not a valid value, so I ignored it.`, outside: (f, v, lo, hi) => `${f} = ${v} is outside the range the model learned from (${lo} to ${hi}), so treat the answer with caution.`,
     ex: ["N 90, P 42, K 43, temperature 21, humidity 82, pH 6.5, rainfall 203", "nitrogen 40, phosphorus 68, potassium 80, temperature 19, humidity 17, pH 7.3, rainfall 80", "rainfall 200 mm"] },
-  hi: { tab: "चैट", title: "अपने शब्दों में पूछें", hint: "अपने खेत की मिट्टी और मौसम के मान लिखें, जैसे: नाइट्रोजन 90, फॉस्फोरस 42, पोटैशियम 43, तापमान 21, नमी 82, पीएच 6.5, बारिश 203। यह चैट फसल सलाह वाले उसी प्रशिक्षित मॉडल का उपयोग करता है और इंटरनेट के बिना चलता है।",
-    ph: "अपने खेत के मान लिखें...", send: "भेजें", reset: "नया खेत", tryEx: "उदाहरण आज़माएँ", known: "अब तक के मान",
+  hi: { tab: "चैट", title: "अपने शब्दों में पूछें", hint: "अपने खेत की मिट्टी और मौसम के मान लिखें, या फसल, उपज, भाव, सीज़न, उर्वरक या इस मॉडल के बारे में कुछ भी पूछें। मान का उदाहरण: नाइट्रोजन 90, फॉस्फोरस 42, पोटैशियम 43, तापमान 21, नमी 82, पीएच 6.5, बारिश 203। यह चैट फसल सलाह वाले उसी प्रशिक्षित मॉडल का उपयोग करता है और इंटरनेट के बिना चलता है।",
+    ph: "अपने खेत के मान लिखें...", send: "भेजें", reset: "नया खेत", tryEx: "उदाहरण आज़माएँ", askQ: "या प्रश्न पूछें", known: "अब तक के मान",
     got: "मिला", need: "अभी चाहिए", noNum: "मुझे कोई मान नहीं मिला। कृपया ऐसे लिखें: “नाइट्रोजन 90, बारिश 200”। मुझे चाहिए: N, P, K, तापमान, नमी, पीएच और बारिश।",
     all: "मेरे पास सभी 7 मान हैं।", rec: "सुझाई गई फसलें", why: "कारण", open: "फसल सलाह में खोलें", read: "🔊 सुनें", more: "आप कोई भी मान बदल सकते हैं, जैसे “बारिश 120”, मैं फिर से उत्तर दूँगा।",
     invalid: (f, v) => `${f} = ${v} मान्य नहीं है, इसलिए मैंने इसे छोड़ दिया।`, outside: (f, v, lo, hi) => `${f} = ${v} उस सीमा (${lo} से ${hi}) से बाहर है जिससे मॉडल ने सीखा है, इसलिए उत्तर पर सावधानी से भरोसा करें।`,
     ex: ["नाइट्रोजन 90, फॉस्फोरस 42, पोटैशियम 43, तापमान 21, नमी 82, पीएच 6.5, बारिश 203", "नाइट्रोजन 40, फॉस्फोरस 68, पोटैशियम 80, तापमान 19, नमी 17, पीएच 7.3, बारिश 80", "बारिश 200 मिमी"] },
-  ta: { tab: "அரட்டை", title: "உங்கள் சொற்களில் கேளுங்கள்", hint: "உங்கள் வயலின் மண் மற்றும் காலநிலை மதிப்புகளை எழுதுங்கள், எ.கா: நைட்ரஜன் 90, பாஸ்பரஸ் 42, பொட்டாசியம் 43, வெப்பநிலை 21, ஈரப்பதம் 82, பிஎச் 6.5, மழை 203. இது பயிர் ஆலோசனையில் உள்ள அதே பயிற்சி பெற்ற மாதிரியைப் பயன்படுத்துகிறது; இணையம் இல்லாமலும் இயங்கும்.",
-    ph: "வயல் மதிப்புகளை எழுதுங்கள்...", send: "அனுப்பு", reset: "புதிய வயல்", tryEx: "எடுத்துக்காட்டு", known: "இதுவரை மதிப்புகள்",
+  ta: { tab: "அரட்டை", title: "உங்கள் சொற்களில் கேளுங்கள்", hint: "உங்கள் வயலின் மண் மற்றும் காலநிலை மதிப்புகளை எழுதுங்கள், அல்லது பயிர், மகசூல், விலை, பருவம், உரம் அல்லது இந்த மாதிரி பற்றி எதையும் கேளுங்கள். மதிப்பு எடுத்துக்காட்டு: நைட்ரஜன் 90, பாஸ்பரஸ் 42, பொட்டாசியம் 43, வெப்பநிலை 21, ஈரப்பதம் 82, பிஎச் 6.5, மழை 203. இது பயிர் ஆலோசனையில் உள்ள அதே பயிற்சி பெற்ற மாதிரியைப் பயன்படுத்துகிறது; இணையம் இல்லாமலும் இயங்கும்.",
+    ph: "வயல் மதிப்புகளை எழுதுங்கள்...", send: "அனுப்பு", reset: "புதிய வயல்", tryEx: "எடுத்துக்காட்டு", askQ: "அல்லது கேள்வி கேளுங்கள்", known: "இதுவரை மதிப்புகள்",
     got: "கிடைத்தது", need: "இன்னும் தேவை", noNum: "எந்த மதிப்பும் கிடைக்கவில்லை. “நைட்ரஜன் 90, மழை 200” போல எழுதுங்கள். தேவை: N, P, K, வெப்பநிலை, ஈரப்பதம், பிஎச், மழை.",
     all: "7 மதிப்புகளும் கிடைத்தன.", rec: "பரிந்துரைக்கப்பட்ட பயிர்கள்", why: "காரணம்", open: "பயிர் ஆலோசனையில் திற", read: "🔊 கேளுங்கள்", more: "எந்த மதிப்பையும் மாற்றலாம், எ.கா. “மழை 120”, நான் மீண்டும் பதிலளிப்பேன்.",
     invalid: (f, v) => `${f} = ${v} சரியான மதிப்பு அல்ல, அதனால் தவிர்த்தேன்.`, outside: (f, v, lo, hi) => `${f} = ${v} மாதிரி கற்ற வரம்புக்கு (${lo} முதல் ${hi}) வெளியே உள்ளது, எனவே பதிலை எச்சரிக்கையுடன் பாருங்கள்.`,
@@ -323,7 +325,8 @@ function renderKnown() {
 }
 function renderChatStatic() {
   const c = CHAT[L]; $("tabChatBtn").textContent = c.tab; $("chatTitle").textContent = c.title; $("chatHint").textContent = c.hint;
-  $("chatIn").placeholder = c.ph; $("chatSend").textContent = c.send; $("chatReset").textContent = c.reset; $("chatTry").textContent = c.tryEx + ":";
+  $("chatIn").placeholder = c.ph; $("chatSend").textContent = c.send; $("chatReset").textContent = c.reset; $("chatTry").textContent = c.tryEx + ":"; $("chatQTry").textContent = c.askQ + ":";
+  $("chatQ").innerHTML = SUGGEST[L].map((x, i) => `<button class="ghost" data-q="${i}">${esc(x.length > 40 ? x.slice(0, 38) + "…" : x)}</button>`).join("");
   $("chatEx").innerHTML = c.ex.map((x, i) => `<button class="ghost" data-ex="${i}">${esc(x.length > 38 ? x.slice(0, 36) + "…" : x)}</button>`).join("");
   renderKnown();
 }
@@ -336,14 +339,17 @@ function chatAnswer(lg) {
     <div class="row" style="margin-top:10px"><button class="ghost" data-act="open">${c.open}</button><button class="ghost" data-act="read">${c.read}</button></div>
     <div class="muted" style="font-size:12.5px;margin-top:8px">${c.more}</div><div class="muted" style="font-size:12px;margin-top:4px">${T[lg].disclaimer}</div>`);
 }
+const QA = { meta, yd: defs, fert, metrics };
 function handleChat(text) {
   text = text.trim(); if (!text) return;
   addBubble("me", esc(text));
   const p = parseMessage(text, FS), lg = p.lang !== "en" ? p.lang : L, c = CHAT[lg];
   p.warnings.forEach((w) => addBubble("bot warn", w.reason === "invalid" ? c.invalid(fnL(lg, w.feature).split(" (")[0], fmtV(w.value)) : c.outside(fnL(lg, w.feature).split(" (")[0], fmtV(w.value), fmtV(w.min), fmtV(w.max))));
+  const hasVals = Object.keys(p.values).length > 0;
+  const qa = answerQuestion(text, lg, QA);
+  if (qa && (!hasVals || qa.intent === "fert" || qa.intent === "fertinfo")) { addBubble("bot", qa.html); return; }   // a question, answered from the datasets
+  if (!hasVals) return addBubble("bot", NO_MATCH(lg));
   Object.assign(chatVals, p.values); renderKnown();
-  if (!Object.keys(p.values).length && !Object.keys(chatVals).length) return addBubble("bot", c.noNum);
-  if (!Object.keys(p.values).length) return p.warnings.length ? null : addBubble("bot", c.noNum);
   const missing = F.filter((f) => !(f in chatVals));
   if (missing.length) {
     const have = F.filter((f) => f in chatVals).map((f) => `${fnL(lg, f).split(" (")[0]} ${fmtV(chatVals[f])}`).join(", ");
@@ -353,6 +359,7 @@ function handleChat(text) {
 }
 $("chatForm").onsubmit = (e) => { e.preventDefault(); const v = $("chatIn").value; $("chatIn").value = ""; handleChat(v); };
 $("chatReset").onclick = () => { chatVals = {}; $("chatLog").innerHTML = ""; renderKnown(); addBubble("bot", CHAT[L].hint); };
+$("chatQ").onclick = (e) => { const i = e.target.dataset.q; if (i !== undefined) handleChat(SUGGEST[L][+i]); };
 $("chatEx").onclick = (e) => { const i = e.target.dataset.ex; if (i !== undefined) handleChat(CHAT[L].ex[+i]); };
 $("chatLog").onclick = (e) => {
   const a = e.target.dataset.act; if (!a) return;
