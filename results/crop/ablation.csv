@@ -1,0 +1,8 @@
+dropped_feature,cv_accuracy,change_vs_full
+rainfall,0.9614,-0.0347
+humidity,0.9807,-0.0153
+P,0.9875,-0.0085
+K,0.9881,-0.008
+ph,0.9926,-0.0034
+temperature,0.9926,-0.0034
+N,0.9938,-0.0023

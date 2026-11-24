@@ -1,0 +1,6 @@
+{
+ "features": "nutrients only",
+ "model": "Logistic Regression",
+ "cv_accuracy": 0.9990000000000001,
+ "n_rows": 99
+}

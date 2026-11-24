@@ -1,0 +1,9 @@
+feature,r2_drop,std
+Crop,1.6601,0.0334
+State,0.2264,0.0084
+logArea,0.0306,0.0014
+Season,0.0191,0.002
+Annual_Rainfall,0.0039,0.0004
+Fert_per_ha,0.0002,0.0002
+Crop_Year,0.0,0.0
+Pest_per_ha,0.0,0.0

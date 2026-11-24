@@ -1,0 +1,14 @@
+{
+ "best": "Gradient Boosting",
+ "n_rows": 19408,
+ "split_sizes": {
+  "Random 80/20": [
+   15526,
+   3882
+  ],
+  "Future years (train <=2015, test 2016-2020)": [
+   15183,
+   4225
+  ]
+ }
+}

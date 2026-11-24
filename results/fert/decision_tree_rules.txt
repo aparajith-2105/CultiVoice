@@ -1,0 +1,19 @@
+|--- Phosphorus <= 4.00
+|   |--- class: Urea
+|--- Phosphorus >  4.00
+|   |--- Phosphorus <= 34.00
+|   |   |--- Nitrogen <= 18.00
+|   |   |   |--- Phosphorus <= 21.50
+|   |   |   |   |--- Potassium <= 5.00
+|   |   |   |   |   |--- class: 20-20
+|   |   |   |   |--- Potassium >  5.00
+|   |   |   |   |   |--- Potassium <= 15.50
+|   |   |   |   |   |   |--- class: 17-17-17
+|   |   |   |   |   |--- Potassium >  15.50
+|   |   |   |   |   |   |--- class: 10-26-26
+|   |   |   |--- Phosphorus >  21.50
+|   |   |   |   |--- class: 14-35-14
+|   |   |--- Nitrogen >  18.00
+|   |   |   |--- class: 28-28
+|   |--- Phosphorus >  34.00
+|   |   |--- class: DAP

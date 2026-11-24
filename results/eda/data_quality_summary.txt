@@ -1,0 +1,8 @@
+Crop_recommendation: 2200 rows, 22 crops, 0 missing, 0 duplicates, 100-100 rows per crop (perfectly balanced)
+Strongest feature correlation: ('P', 'K') = 0.74 (P and K move together)
+crop_yield: 19689 raw rows -> 19408 after cleaning (dropped Coconut because it is measured in nuts, and rows with zero area/production). Years 1997-2020, 30 states, 54 crops
+In crop_yield, Fert_per_ha, Pest_per_ha and Annual_Rainfall are identical for every crop in the same state-year (std ~ 0), so they describe the state-year, not the crop.
+crop_production: 246091 rows, 33 states, 646 districts, 124 crops, 1997-2015; 3730 rows with missing Production (1.5%)
+District merge check (crop_production vs district rainfall normals): 418 of 652 districts match exactly after name cleaning (64%); the rest need fuzzy matching
+Fertilizer_Prediction: only 99 rows, 7 fertilizer classes (smallest class = 7 rows), 0 missing
+Price snapshot: Jute (market 839 vs MSP 5650) and Copra (23650 vs 12100) look like unit/grade mismatches, so they are excluded from the MSP chart

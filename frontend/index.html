@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CultiVoice</title>
+<style>
+  :root{--bg:#F5F8F4;--card:#fff;--ink:#17261D;--muted:#5E6F63;--line:#DCE5DD;--g:#2E7D4F;--gd:#1F3D2B;--gl:#E4F1E8;--amber:#C77F00;--amberl:#FFF3DB;--red:#B3261E}
+  @media (prefers-color-scheme:dark){:root{--bg:#101712;--card:#18221B;--ink:#E7EFE9;--muted:#9DB0A2;--line:#2A3A2F;--g:#5BBE82;--gd:#CFE9D8;--gl:#1F3326;--amber:#E5A93A;--amberl:#33290F;--red:#F2B8B5}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI","Nirmala UI","Noto Sans Tamil","Noto Sans Devanagari",sans-serif}
+  header{background:var(--gd);color:#fff;padding:14px 16px}
+  @media (prefers-color-scheme:dark){header{background:#1F3326;color:#E7EFE9}}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+  .hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brand{font-size:22px;font-weight:700;letter-spacing:.2px}.brand small{display:block;font-size:12.5px;font-weight:400;opacity:.8}
+  .lang button{background:transparent;border:1px solid rgba(255,255,255,.45);color:inherit;padding:5px 12px;border-radius:999px;cursor:pointer;font:inherit;margin-left:4px}
+  .lang button.on{background:#fff;color:#1F3D2B;font-weight:600}
+  nav{display:flex;gap:4px;overflow-x:auto;padding:12px 0 0;border-bottom:1px solid var(--line);margin-bottom:16px}
+  nav button{background:none;border:0;padding:9px 14px;font:inherit;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+  nav button.on{color:var(--g);border-bottom-color:var(--g);font-weight:600}
+  .grid{display:grid;grid-template-columns:340px 1fr;gap:16px}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+  h2{font-size:16px;margin:0 0 10px}h3{font-size:14px;margin:14px 0 6px;color:var(--muted);font-weight:600}
+  label{display:block;font-size:13px;color:var(--muted);margin-top:10px}
+  .sl{display:flex;align-items:center;gap:8px}.sl input[type=range]{flex:1;accent-color:var(--g)}
+  input[type=number],select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+  .sl input[type=number]{width:76px}
+  button.primary{width:100%;margin-top:14px;padding:11px;border:0;border-radius:10px;background:var(--g);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+  button.ghost{background:var(--gl);color:var(--g);border:0;border-radius:8px;padding:7px 12px;cursor:pointer;font:inherit;font-size:13px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .crop{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.crop:first-of-type{border-top:0}
+  .crop .nm{width:120px;font-weight:600}.crop .nm small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+  .bar{flex:1;height:10px;background:var(--gl);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--g)}
+  .crop.first .bar i{background:var(--g)}.crop:not(.first) .bar i{background:#8FB79C}
+  .pct{width:48px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .chip{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+  .typical{background:var(--gl);color:var(--g)}.edge{background:var(--amberl);color:var(--amber)}.unusual{background:#FBE3E1;color:var(--red)}
+  @media (prefers-color-scheme:dark){.unusual{background:#3A1D1B}}
+  .why li{margin:6px 0}.why{padding-left:18px;margin:0}
+  .note{font-size:12.5px;color:var(--muted);background:var(--amberl);border-radius:8px;padding:8px 10px;margin-top:10px}
+  .big{font-size:34px;font-weight:700;color:var(--g);line-height:1.1}.muted{color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}th{color:var(--muted);font-weight:600}
+  .hb{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}.hb span:first-child{width:110px}.hb .bar{height:12px}
+  .scen{display:flex;gap:6px;flex-wrap:wrap}.scen div{flex:1;min-width:88px;text-align:center;background:var(--gl);border-radius:8px;padding:8px 4px;font-size:13px}.scen b{display:block}
+  svg text{fill:var(--muted);font-size:11px}
+  .hidden{display:none}
+  footer{color:var(--muted);font-size:12.5px;padding:8px 0 28px}
+  #toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--gd);color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.25s;pointer-events:none}#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header><div class="wrap hrow">
+  <div class="brand">CultiVoice<small data-i="tagline"></small></div>
+  <div class="lang" id="lang"><button data-l="en" class="on">English</button><button data-l="ta">தமிழ்</button><button data-l="hi">हिन्दी</button></div>
+</div></header>
+<main class="wrap">
+<nav id="tabs"><button data-t="crop" class="on" data-i="tabCrop"></button><button data-t="yield" data-i="tabYield"></button><button data-t="fert" data-i="tabFert"></button><button data-t="info" data-i="tabInfo"></button></nav>
+
+<section id="crop"><div class="grid">
+  <div class="card"><h2 data-i="yourField"></h2>
+    <label data-i="preset"></label><select id="preset"></select>
+    <div id="sliders"></div>
+    <button class="primary" id="go" data-i="getAdvice"></button>
+    <div class="row" style="margin-top:10px"><button class="ghost" id="mic" data-i="speak"></button><span class="muted" id="micMsg" style="font-size:12.5px"></span></div>
+  </div>
+  <div id="cropOut"><div class="card"><h2 data-i="recommend"></h2><div id="top"></div>
+      <div class="row" style="margin-top:8px"><button class="ghost" id="say" data-i="readAloud"></button></div></div>
+    <div class="card"><h2 data-i="whyTitle"></h2><ul class="why" id="why"></ul>
+      <h3 data-i="radarTitle"></h3><div id="radar"></div></div>
+    <div class="card"><h2 data-i="whatIfRain"></h2><div class="scen" id="scen"></div><div class="note" data-i="whatIfNote"></div></div>
+    <div class="card" id="priceCard"><h2 data-i="price"></h2><div id="priceBox"></div></div>
+  </div></div></section>
+
+<section id="yield" class="hidden"><div class="grid">
+  <div class="card"><h2 data-i="yieldIn"></h2>
+    <label data-i="state"></label><select id="ystate"></select>
+    <label data-i="crop"></label><select id="ycrop"></select>
+    <label data-i="season"></label><select id="yseason"></select>
+    <label data-i="area"></label><input type="number" id="yarea" min="1" step="100">
+    <details style="margin-top:10px"><summary class="muted" data-i="advanced"></summary>
+      <label data-i="rainAnnual"></label><input type="number" id="yrain" step="10">
+      <label data-i="fertHa"></label><input type="number" id="yfert" step="1">
+      <label data-i="pestHa"></label><input type="number" id="ypest" step="0.01"></details>
+    <button class="primary" id="ygo" data-i="predictYield"></button></div>
+  <div><div class="card"><h2 data-i="yieldOut"></h2><div id="yout"></div></div>
+    <div class="card"><h2 data-i="compare"></h2><div id="ycmp"></div><div class="note" data-i="compareNote"></div></div></div>
+</div></section>
+
+<section id="fert" class="hidden"><div class="grid">
+  <div class="card"><h2 data-i="fertIn"></h2>
+    <label>N</label><input type="number" id="fN" value="37" min="0" max="45">
+    <label>P</label><input type="number" id="fP" value="0" min="0" max="45">
+    <label>K</label><input type="number" id="fK" value="0" min="0" max="45">
+    <button class="primary" id="fgo" data-i="suggestFert"></button>
+    <div class="note" data-i="fertNote"></div></div>
+  <div class="card"><h2 data-i="fertOut"></h2><div id="fout"></div></div>
+</div></section>
+
+<section id="info" class="hidden"><div id="infoBody"></div></section>
+<footer data-i="disclaimer"></footer>
+</main>
+<div id="toast"></div>
+
+<script type="module">
+import * as E from "./model/predict.js";
+const J = (n) => fetch("./model/" + n).then((r) => r.json());
+const [crop, yld, fert, meta, defs, metrics] = await Promise.all(["crop_rf.json", "yield_gbm.json", "fert_lr.json", "metadata.json", "yield_defaults.json", "metrics.json"].map(J));
+
+/* ---------- translations ---------- */
+const FEAT = {
+  en: { N: "Nitrogen (N)", P: "Phosphorus (P)", K: "Potassium (K)", temperature: "Temperature (°C)", humidity: "Humidity (%)", ph: "Soil pH", rainfall: "Rainfall (mm)" },
+  hi: { N: "नाइट्रोजन (N)", P: "फॉस्फोरस (P)", K: "पोटैशियम (K)", temperature: "तापमान (°C)", humidity: "नमी (%)", ph: "मिट्टी का pH", rainfall: "वर्षा (मिमी)" },
+  ta: { N: "நைட்ரஜன் (N)", P: "பாஸ்பரஸ் (P)", K: "பொட்டாசியம் (K)", temperature: "வெப்பநிலை (°C)", humidity: "ஈரப்பதம் (%)", ph: "மண் pH", rainfall: "மழை (மிமீ)" },
+};
+const CROPN = {
+  hi: { rice: "चावल", maize: "मक्का", chickpea: "चना", kidneybeans: "राजमा", pigeonpeas: "अरहर", mothbeans: "मोठ", mungbean: "मूंग", blackgram: "उड़द", lentil: "मसूर", pomegranate: "अनार", banana: "केला", mango: "आम", grapes: "अंगूर", watermelon: "तरबूज", muskmelon: "खरबूजा", apple: "सेब", orange: "संतरा", papaya: "पपीता", coconut: "नारियल", cotton: "कपास", jute: "जूट", coffee: "कॉफ़ी" },
+  ta: { rice: "நெல்", maize: "மக்காச்சோளம்", chickpea: "கொண்டைக்கடலை", kidneybeans: "ராஜ்மா", pigeonpeas: "துவரை", mothbeans: "மொத் பயறு", mungbean: "பாசிப்பயறு", blackgram: "உளுந்து", lentil: "மசூர் பருப்பு", pomegranate: "மாதுளை", banana: "வாழை", mango: "மாம்பழம்", grapes: "திராட்சை", watermelon: "தர்பூசணி", muskmelon: "முலாம்பழம்", apple: "ஆப்பிள்", orange: "ஆரஞ்சு", papaya: "பப்பாளி", coconut: "தேங்காய்", cotton: "பருத்தி", jute: "சணல்", coffee: "காபி" },
+};
+const T = {
+  en: { tagline: "Crop, yield and fertilizer advice from your soil and climate", tabCrop: "Crop advisor", tabYield: "Yield", tabFert: "Fertilizer", tabInfo: "Model transparency",
+    yourField: "Your field", preset: "Try an example", getAdvice: "Get advice", speak: "🎤 Speak", readAloud: "🔊 Read aloud", recommend: "Recommended crops", whyTitle: "Why this crop?",
+    radarTitle: "Your field vs the crop's usual range", whatIfRain: "What if rainfall changes?", whatIfNote: "Shows how the top crop would change if rainfall were higher or lower, keeping everything else the same.",
+    price: "Market price hint", yieldIn: "Yield inputs", state: "State", crop: "Crop", season: "Season", area: "Area (hectares)", advanced: "Advanced: state conditions", rainAnnual: "Annual rainfall (mm)",
+    fertHa: "Fertilizer per hectare (kg)", pestHa: "Pesticide per hectare (kg)", predictYield: "Predict yield", yieldOut: "Expected yield", compare: "Compare crops in this state", fertIn: "Nutrient values", suggestFert: "Suggest fertilizer", fertOut: "Suggested fertilizer",
+    typical: "within the usual range", edge: "at the edge of the usual range", unusual: "outside the usual range", conf: "confidence", match: "match", yourVal: "Your", usual: "usual",
+    tha: "tonnes per hectare", total: "Expected production", typicalYield: "Typical yield for this crop in this state (past data)", mspLine: "MSP", mktLine: "Market (snapshot)", noPrice: "No price data for this crop in the snapshot.",
+    compareNote: "Tonnes per hectare are not comparable across crop types (sugarcane and banana are weighed as whole plants/fruit). Compare within similar crops.",
+    fertNote: "Trained on only 99 rows. The N, P, K numbers follow the Kaggle fertilizer dataset and are not the same scale as the crop advisor's soil values.",
+    disclaimer: "Educational project. Predictions come from public datasets and are not a substitute for local agronomy advice.", heard: "Heard", nothing: "Could not understand numbers. Try: nitrogen 90 phosphorus 40.", unsupported: "Voice input is not supported in this browser.", filled: "Filled from voice",
+    say: (c, p, w) => `Recommended crop: ${c}, ${p} percent match. Main reason: ${w}.` },
+  hi: { tagline: "आपकी मिट्टी और जलवायु के अनुसार फसल, उपज और उर्वरक सलाह", tabCrop: "फसल सलाह", tabYield: "उपज", tabFert: "उर्वरक", tabInfo: "मॉडल की जानकारी",
+    yourField: "आपका खेत", preset: "उदाहरण चुनें", getAdvice: "सलाह पाएँ", speak: "🎤 बोलें", readAloud: "🔊 सुनें", recommend: "सुझाई गई फसलें", whyTitle: "यह फसल क्यों?",
+    radarTitle: "आपका खेत बनाम फसल की सामान्य सीमा", whatIfRain: "बारिश बदले तो?", whatIfNote: "बाकी सब वही रखकर बारिश कम या ज़्यादा होने पर सबसे अच्छी फसल कैसे बदलेगी।",
+    price: "बाज़ार भाव संकेत", yieldIn: "उपज की जानकारी", state: "राज्य", crop: "फसल", season: "मौसम", area: "क्षेत्रफल (हेक्टेयर)", advanced: "विस्तृत: राज्य की स्थिति", rainAnnual: "वार्षिक वर्षा (मिमी)",
+    fertHa: "प्रति हेक्टेयर उर्वरक (किग्रा)", pestHa: "प्रति हेक्टेयर कीटनाशक (किग्रा)", predictYield: "उपज का अनुमान", yieldOut: "अनुमानित उपज", compare: "इस राज्य में फसलों की तुलना", fertIn: "पोषक तत्व मान", suggestFert: "उर्वरक सुझाएँ", fertOut: "सुझाया गया उर्वरक",
+    typical: "सामान्य सीमा के भीतर", edge: "सामान्य सीमा के किनारे", unusual: "सामान्य सीमा से बाहर", conf: "विश्वास", match: "मेल", yourVal: "आपका", usual: "सामान्य",
+    tha: "टन प्रति हेक्टेयर", total: "अनुमानित उत्पादन", typicalYield: "इस राज्य में इस फसल की सामान्य उपज (पुराना डेटा)", mspLine: "न्यूनतम समर्थन मूल्य", mktLine: "बाज़ार भाव (स्नैपशॉट)", noPrice: "इस फसल के लिए भाव डेटा उपलब्ध नहीं।",
+    compareNote: "अलग-अलग फसल प्रकारों की टन प्रति हेक्टेयर उपज की तुलना सही नहीं है (गन्ना और केला पूरे पौधे/फल के वज़न में गिने जाते हैं)। समान फसलों की ही तुलना करें।",
+    fertNote: "केवल 99 पंक्तियों पर प्रशिक्षित। N, P, K के मान Kaggle उर्वरक डेटासेट के हैं और फसल सलाह के मिट्टी मानों के समान पैमाने पर नहीं हैं।",
+    disclaimer: "शैक्षणिक परियोजना। अनुमान सार्वजनिक डेटासेट पर आधारित हैं; स्थानीय कृषि सलाह का विकल्प नहीं।", heard: "सुना", nothing: "संख्याएँ समझ नहीं आईं। कहें: नाइट्रोजन 90 फॉस्फोरस 40।", unsupported: "इस ब्राउज़र में आवाज़ इनपुट उपलब्ध नहीं।", filled: "आवाज़ से भरा गया",
+    say: (c, p, w) => `सुझाई गई फसल ${c}, ${p} प्रतिशत मेल। मुख्य कारण: ${w}।` },
+  ta: { tagline: "உங்கள் மண் மற்றும் காலநிலைக்கு ஏற்ற பயிர், மகசூல், உர ஆலோசனை", tabCrop: "பயிர் ஆலோசனை", tabYield: "மகசூல்", tabFert: "உரம்", tabInfo: "மாதிரி விவரம்",
+    yourField: "உங்கள் வயல்", preset: "எடுத்துக்காட்டு தேர்வு", getAdvice: "ஆலோசனை பெறுக", speak: "🎤 பேசுங்கள்", readAloud: "🔊 கேளுங்கள்", recommend: "பரிந்துரைக்கப்பட்ட பயிர்கள்", whyTitle: "இந்தப் பயிர் ஏன்?",
+    radarTitle: "உங்கள் வயல் vs பயிரின் வழக்கமான வரம்பு", whatIfRain: "மழை மாறினால்?", whatIfNote: "மற்ற அனைத்தும் அப்படியே இருக்க, மழை கூடினால் அல்லது குறைந்தால் சிறந்த பயிர் எப்படி மாறும் என்பதைக் காட்டுகிறது.",
+    price: "சந்தை விலை குறிப்பு", yieldIn: "மகசூல் விவரங்கள்", state: "மாநிலம்", crop: "பயிர்", season: "பருவம்", area: "பரப்பளவு (ஹெக்டேர்)", advanced: "மேலும்: மாநில நிலைமைகள்", rainAnnual: "ஆண்டு மழை (மிமீ)",
+    fertHa: "ஹெக்டேருக்கு உரம் (கிலோ)", pestHa: "ஹெக்டேருக்கு பூச்சிக்கொல்லி (கிலோ)", predictYield: "மகசூல் கணிப்பு", yieldOut: "எதிர்பார்க்கப்படும் மகசூல்", compare: "இந்த மாநிலத்தில் பயிர்கள் ஒப்பீடு", fertIn: "ஊட்டச்சத்து மதிப்புகள்", suggestFert: "உரம் பரிந்துரை", fertOut: "பரிந்துரைக்கப்பட்ட உரம்",
+    typical: "வழக்கமான வரம்புக்குள்", edge: "வழக்கமான வரம்பின் விளிம்பில்", unusual: "வழக்கமான வரம்புக்கு வெளியே", conf: "நம்பிக்கை", match: "பொருத்தம்", yourVal: "உங்கள்", usual: "வழக்கமான",
+    tha: "டன் / ஹெக்டேர்", total: "எதிர்பார்க்கப்படும் உற்பத்தி", typicalYield: "இந்த மாநிலத்தில் இந்தப் பயிரின் வழக்கமான மகசூல் (கடந்த தரவு)", mspLine: "குறைந்தபட்ச ஆதரவு விலை", mktLine: "சந்தை (ஸ்னாப்ஷாட்)", noPrice: "இந்தப் பயிருக்கு விலைத் தரவு இல்லை.",
+    compareNote: "வெவ்வேறு பயிர் வகைகளின் டன்/ஹெக்டேர் மகசூலை ஒப்பிடுவது சரியல்ல (கரும்பு, வாழை முழு எடையில் கணக்கிடப்படுகின்றன). ஒத்த பயிர்களையே ஒப்பிடுங்கள்.",
+    fertNote: "99 வரிசைகளில் மட்டுமே பயிற்சி. N, P, K மதிப்புகள் Kaggle உரத் தரவுத்தொகுப்பைச் சேர்ந்தவை; பயிர் ஆலோசனையின் மண் மதிப்புகளின் அளவு அல்ல.",
+    disclaimer: "கல்வித் திட்டம். கணிப்புகள் பொதுத் தரவுகளை அடிப்படையாகக் கொண்டவை; உள்ளூர் வேளாண் ஆலோசனைக்கு மாற்றல்ல.", heard: "கேட்டது", nothing: "எண்கள் புரியவில்லை. சொல்லுங்கள்: நைட்ரஜன் 90 பாஸ்பரஸ் 40.", unsupported: "இந்த உலாவியில் குரல் உள்ளீடு இல்லை.", filled: "குரலில் இருந்து நிரப்பப்பட்டது",
+    say: (c, p, w) => `பரிந்துரைக்கப்பட்ட பயிர் ${c}, ${p} சதவீதம் பொருத்தம். முக்கிய காரணம்: ${w}.` },
+};
+const SPEECH = { en: "en-IN", hi: "hi-IN", ta: "ta-IN" };
+let L = "en";
+const t = (k) => T[L][k] ?? T.en[k];
+const fn = (f) => FEAT[L][f];
+const cn = (c) => (L === "en" ? c : CROPN[L][c] || c);
+const $ = (id) => document.getElementById(id);
+const toast = (m) => { const e = $("toast"); e.textContent = m; e.classList.add("on"); setTimeout(() => e.classList.remove("on"), 2200); };
+
+/* ---------- crop advisor ---------- */
+const F = meta.crop_features, FS = meta.feature_stats;
+const STEP = { N: 1, P: 1, K: 1, temperature: 0.1, humidity: 0.1, ph: 0.1, rainfall: 1 };
+const PRESETS = ["rice", "maize", "chickpea", "mango", "coffee", "apple", "cotton"];
+const state = Object.fromEntries(F.map((f) => [f, Math.round(meta.profiles.rice[f].mean / STEP[f]) * STEP[f]]));
+function buildSliders() {
+  $("sliders").innerHTML = F.map((f) => `<label>${fn(f)}</label><div class="sl"><input type="range" id="r_${f}" min="${FS[f].min}" max="${FS[f].max}" step="${STEP[f]}" value="${state[f]}"><input type="number" id="n_${f}" min="${FS[f].min}" max="${FS[f].max}" step="${STEP[f]}" value="${state[f]}"></div>`).join("");
+  F.forEach((f) => {
+    const r = $("r_" + f), n = $("n_" + f);
+    r.oninput = () => { state[f] = +r.value; n.value = r.value; };
+    n.oninput = () => { state[f] = +n.value; r.value = n.value; };
+    r.onchange = n.onchange = run;
+  });
+}
+function buildPresets() {
+  $("preset").innerHTML = PRESETS.map((c) => `<option value="${c}">${cn(c)}</option>`).join("");
+  $("preset").onchange = () => { F.forEach((f) => { state[f] = Math.round(meta.profiles[$("preset").value][f].mean / STEP[f]) * STEP[f]; $("r_" + f).value = $("n_" + f).value = state[f]; }); run(); };
+}
+function radarSVG(cropName) {
+  const S = 300, c = S / 2, R = 105, n = F.length, ang = (i) => -Math.PI / 2 + (i * 2 * Math.PI) / n;
+  const norm = (f, v) => Math.min(1, Math.max(0, (v - FS[f].min) / (FS[f].max - FS[f].min)));
+  const pt = (i, v) => [c + Math.cos(ang(i)) * R * v, c + Math.sin(ang(i)) * R * v];
+  const poly = (vals) => vals.map((v, i) => pt(i, v).join(",")).join(" ");
+  const p10 = F.map((f) => norm(f, meta.profiles[cropName][f].p10)), p90 = F.map((f) => norm(f, meta.profiles[cropName][f].p90)), me = F.map((f) => norm(f, state[f]));
+  const grid = [0.25, 0.5, 0.75, 1].map((k) => `<polygon points="${poly(F.map(() => k))}" fill="none" stroke="var(--line)"/>`).join("");
+  const axes = F.map((f, i) => { const [x, y] = pt(i, 1.2); return `<line x1="${c}" y1="${c}" x2="${pt(i, 1)[0]}" y2="${pt(i, 1)[1]}" stroke="var(--line)"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle">${fn(f).split(" (")[0]}</text>`; }).join("");
+  return `<svg viewBox="0 0 ${S} ${S}" width="100%" style="max-width:340px" role="img" aria-label="radar">${grid}${axes}
+    <polygon points="${poly(p90)}" fill="var(--g)" fill-opacity=".18" stroke="var(--g)" stroke-dasharray="4 3"/><polygon points="${poly(p10)}" fill="var(--card)" stroke="var(--g)" stroke-dasharray="4 3"/>
+    <polygon points="${poly(me)}" fill="var(--amber)" fill-opacity=".25" stroke="var(--amber)" stroke-width="2"/></svg>
+    <div class="muted" style="font-size:12.5px"><span style="color:var(--amber)">■</span> ${t("yourVal")} &nbsp; <span style="color:var(--g)">■</span> ${t("usual")} (10–90%)</div>`;
+}
+let lastTop, lastWhy;
+function run() {
+  const top = E.topCrops(crop, state, 3); lastTop = top;
+  $("top").innerHTML = top.map((o, i) => `<div class="crop ${i ? "" : "first"}"><div class="nm">${cn(o.crop)}${L !== "en" ? `<small>${o.crop}</small>` : ""}</div><div class="bar"><i style="width:${(o.prob * 100).toFixed(1)}%"></i></div><div class="pct">${(o.prob * 100).toFixed(0)}%</div></div>`).join("");
+  const best = top[0].crop, why = E.explainCrop(crop, meta, state, best); lastWhy = why;
+  $("why").innerHTML = why.slice(0, 4).map((w) => `<li><b>${fn(w.feature)}</b> ${+(+w.value).toFixed(1)} <span class="chip ${w.status}">${t(w.status)}</span> <span class="muted">(${w.typical.map((x) => +x.toFixed(1)).join("–")}) · ${t("conf")} ${w.influence >= 0 ? "+" : ""}${(w.influence * 100).toFixed(0)} pts</span></li>`).join("");
+  $("radar").innerHTML = radarSVG(best);
+  $("scen").innerHTML = E.rainfallWhatIf(crop, state).map((s) => `<div><span class="muted">${s.pct > 0 ? "+" : ""}${s.pct}%</span><b>${cn(s.top[0].crop)}</b>${(s.top[0].prob * 100).toFixed(0)}%</div>`).join("");
+  const ph = E.priceHint(meta, best);
+  $("priceBox").innerHTML = ph ? `<div>${ph.commodity}</div><div class="row"><span>${t("mspLine")}: <b>₹${ph.msp.toLocaleString("en-IN")}</b>/qtl</span><span>${t("mktLine")}: <b>₹${Math.round(ph.market).toLocaleString("en-IN")}</b>/qtl</span><span class="chip ${ph.gapPct >= 0 ? "typical" : "edge"}">${ph.gapPct >= 0 ? "+" : ""}${ph.gapPct.toFixed(0)}%</span></div>` : `<span class="muted">${t("noPrice")}</span>`;
+}
+
+function showResult(cardId) {
+  const el = $(cardId).closest(".card");
+  const cards = el.parentElement.id === "cropOut" ? [...el.parentElement.children] : [el];
+  cards.forEach((c) => c.animate([{ boxShadow: "0 0 0 3px var(--g)" }, { boxShadow: "0 0 0 0 rgba(0,0,0,0)" }], { duration: 900, easing: "ease-out" }));
+  if (window.innerWidth <= 820) el.parentElement.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+$("go").onclick = () => { run(); showResult("top"); };
+$("say").onclick = () => {
+  if (!("speechSynthesis" in window)) return toast(t("unsupported"));
+  const w = lastWhy[0]; const u = new SpeechSynthesisUtterance(T[L].say(cn(lastTop[0].crop), (lastTop[0].prob * 100).toFixed(0), `${fn(w.feature).split(" (")[0]} ${+(+w.value).toFixed(1)}`));
+  u.lang = SPEECH[L]; speechSynthesis.cancel(); speechSynthesis.speak(u);
+};
+/* voice input: spoken "nitrogen 90 phosphorus 40 ..." fills the sliders */
+const KEYS = { N: ["nitrogen", "नाइट्रोजन", "நைட்ரஜன்"], P: ["phosphorus", "फॉस्फोरस", "பாஸ்பரஸ்"], K: ["potassium", "potash", "पोटैशियम", "पोटाश", "பொட்டாசியம்"], ph: ["ph", "पीएच", "பிஎச்", "பிஹெச்"], temperature: ["temperature", "तापमान", "வெப்பநிலை"], humidity: ["humidity", "नमी", "आर्द्रता", "ஈரப்பதம்"], rainfall: ["rainfall", "rain", "बारिश", "वर्षा", "மழை"] };
+$("mic").onclick = () => {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) return toast(t("unsupported"));
+  const rec = new SR(); rec.lang = SPEECH[L]; rec.onresult = (e) => {
+    const s = e.results[0][0].transcript.toLowerCase(); let hit = 0;
+    for (const f of F) for (const k of KEYS[f]) { const m = s.match(new RegExp(k.toLowerCase() + "\\D{0,12}(\\d+(?:[.,]\\d+)?)")); if (m) { state[f] = Math.min(FS[f].max, Math.max(FS[f].min, parseFloat(m[1].replace(",", ".")))); $("r_" + f).value = $("n_" + f).value = state[f]; hit++; break; } }
+    $("micMsg").textContent = `${t("heard")}: "${s}"`; hit ? (run(), toast(t("filled"))) : toast(t("nothing"));
+  };
+  rec.onerror = () => toast(t("nothing")); rec.start();
+};
+
+/* ---------- yield ---------- */
+function buildYield() {
+  $("ystate").innerHTML = meta.states.map((s) => `<option>${s}</option>`).join(""); $("ystate").value = "Punjab";
+  $("ystate").onchange = fillCrops; $("ycrop").onchange = fillSeason; fillCrops();
+}
+function fillCrops() { const d = defs[$("ystate").value]; $("ycrop").innerHTML = Object.keys(d.crops).map((c) => `<option>${c}</option>`).join(""); if (d.crops.Rice) $("ycrop").value = "Rice"; $("yrain").value = d.rainfall; $("yfert").value = d.fert_per_ha; $("ypest").value = d.pest_per_ha; fillSeason(); }
+function fillSeason() { const i = defs[$("ystate").value].crops[$("ycrop").value]; $("yseason").innerHTML = i.seasons.map((s) => `<option>${s}</option>`).join(""); $("yarea").value = i.median_area; }
+function runYield() {
+  const s = $("ystate").value, c = $("ycrop").value, d = defs[s], info = d.crops[c];
+  const inp = { crop: c, season: $("yseason").value, state: s, year: 2019, area: +$("yarea").value, rainfall: +$("yrain").value, fert_per_ha: +$("yfert").value, pest_per_ha: +$("ypest").value };
+  const y = E.predictYield(yld, inp);
+  $("yout").innerHTML = `<div class="big">${y.toFixed(2)} <span style="font-size:15px;font-weight:500" class="muted">${t("tha")}</span></div><p>${t("total")}: <b>${Math.round(y * inp.area).toLocaleString("en-IN")}</b> t</p><p class="muted">${t("typicalYield")}: ${(+info.median_yield).toFixed(2)} (n=${info.n})</p>`;
+  const cmp = E.compareCropsInState(yld, defs, s); const mx = cmp[0].yield;
+  $("ycmp").innerHTML = cmp.slice(0, 10).map((o) => `<div class="hb"><span>${o.crop}</span><div class="bar"><i style="width:${Math.max(2, (o.yield / mx) * 100)}%"></i></div><span style="width:46px;text-align:right">${o.yield.toFixed(1)}</span></div>`).join("");
+}
+$("ygo").onclick = () => { runYield(); showResult("yout"); };
+
+/* ---------- fertilizer ---------- */
+function runFert() {
+  const r = E.recommendFertilizer(fert, { Nitrogen: +$("fN").value, Phosphorus: +$("fP").value, Potassium: +$("fK").value });
+  $("fout").innerHTML = r.slice(0, 3).map((o, i) => `<div class="crop ${i ? "" : "first"}"><div class="nm">${o.fertilizer}<small>N-P-K ${o.npk}</small></div><div class="bar"><i style="width:${(o.prob * 100).toFixed(1)}%"></i></div><div class="pct">${(o.prob * 100).toFixed(0)}%</div></div>`).join("");
+}
+$("fgo").onclick = () => { runFert(); showResult("fout"); };
+
+/* ---------- transparency (English) ---------- */
+function bars(rows, k, v, max, fmt = (x) => x.toFixed(3)) { return rows.map((r) => `<div class="hb"><span>${r[k]}</span><div class="bar"><i style="width:${Math.max(1, (Math.max(0, r[v]) / max) * 100)}%"></i></div><span style="width:56px;text-align:right">${fmt(r[v])}</span></div>`).join(""); }
+function buildInfo() {
+  const c = metrics.crop, f = c.final, y = metrics.yield, fe = metrics.fertilizer;
+  const cmp = c.comparison.map((r) => `<tr><td>${r.Model}</td><td>${(r["CV accuracy"] * 100).toFixed(1)}%</td><td>${(r["Test accuracy"] * 100).toFixed(1)}%</td><td>${r["Test F1"].toFixed(3)}</td></tr>`).join("");
+  const rob = c.robustness, noise = rob["noise (x feature std)"];
+  const robRows = noise.map((n, i) => `<tr><td>${n}</td>${["Random Forest", "SVM (RBF)", "Logistic Regression", "Naive Bayes"].map((m) => `<td>${(rob[m][i] * 100).toFixed(0)}%</td>`).join("")}</tr>`).join("");
+  const yc = y.comparison.filter((r) => r.Split.startsWith("Future")).map((r) => `<tr><td>${r.Model}</td><td>${r["R2 (log scale)"].toFixed(3)}</td><td>${r["Median abs % error"].toFixed(0)}%</td></tr>`).join("");
+  const fc = fe.comparison.filter((r) => r.Features === "nutrients only").map((r) => `<tr><td>${r.Model}</td><td>${(r["CV accuracy"] * 100).toFixed(1)}%</td></tr>`).join("");
+  $("infoBody").innerHTML = `
+  <div class="card"><h2>Crop recommendation: ${f.model}</h2><p>Held-out test accuracy <b>${(f.test_accuracy * 100).toFixed(1)}%</b>, macro F1 <b>${f.test_f1_macro.toFixed(3)}</b>, correct crop in top 3 for <b>${(f.top3_accuracy * 100).toFixed(0)}%</b> of ${f.n_test} test rows. Trained on ${f.n_train} rows, 22 crops.</p>
+    <table><tr><th>Model</th><th>5-fold CV</th><th>Test</th><th>F1</th></tr>${cmp}</table></div>
+  <div class="card"><h2>What drives the recommendation</h2>${bars(c.importance, "feature", "perm_importance", c.importance[0].perm_importance, (x) => (x * 100).toFixed(1) + " pts")}<p class="muted">Permutation importance: accuracy lost when a feature is shuffled. pH and temperature barely matter in this dataset.</p></div>
+  <div class="card"><h2>Robustness to noisy readings</h2><table><tr><th>Noise</th><th>Random Forest</th><th>SVM</th><th>Logistic</th><th>Naive Bayes</th></tr>${robRows}</table><p class="muted">Accuracy falls as measurements get noisier, so the near-perfect score applies to clean readings only.</p></div>
+  <div class="card"><h2>Yield model (${y.meta.best})</h2><p>Tested on future years (trained to 2015, tested 2016-2020).</p><table><tr><th>Model</th><th>R² (log)</th><th>Median error</th></tr>${yc}</table>
+    <h3>What drives yield</h3>${bars(y.importance.slice(0, 6), "feature", "r2_drop", y.importance[0].r2_drop, (x) => x.toFixed(3))}<p class="muted">Crop type and state explain almost everything. Rainfall and fertilizer add very little in this dataset, so no rainfall/fertilizer what-if is offered for yield.</p></div>
+  <div class="card"><h2>Fertilizer model (${fe.meta.model})</h2><table><tr><th>Model (N, P, K only)</th><th>CV accuracy</th></tr>${fc}</table><p class="muted">Only 99 rows. The labels follow the nutrient numbers almost exactly, and adding crop, soil or climate made results worse.</p></div>
+  <div class="card"><h2>Limitations</h2><ul class="why"><li>The crop recommendation data is small, balanced and very clean.</li><li>Yield data ends in 2020; fertilizer, pesticide and rainfall are state-year values shared by all crops.</li><li>Prices are a single 2026-27 snapshot, not a time series.</li><li>Predictions show patterns in past data, not proven cause and effect.</li></ul></div>`;
+}
+
+/* ---------- ui wiring ---------- */
+function applyLang() {
+  document.documentElement.lang = L;
+  document.querySelectorAll("[data-i]").forEach((e) => { e.textContent = t(e.dataset.i); });
+  $("lang").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.l === L));
+  buildSliders(); buildPresets(); run(); runYield(); runFert();
+}
+$("lang").onclick = (e) => { if (e.target.dataset.l) { L = e.target.dataset.l; applyLang(); } };
+$("tabs").onclick = (e) => { const k = e.target.dataset.t; if (!k) return; document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("on", b === e.target)); ["crop", "yield", "fert", "info"].forEach((s) => $(s).classList.toggle("hidden", s !== k)); };
+buildYield(); buildInfo(); applyLang();
+window.__ready = true;
+</script>
+</body>
+</html>

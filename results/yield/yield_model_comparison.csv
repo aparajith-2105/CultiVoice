@@ -1,0 +1,9 @@
+Split,Model,R2 (log scale),RMSE (t/ha),MAE (t/ha),Median abs % error
+Random 80/20,Baseline: crop median,0.736,18.084,2.412,34.807
+Random 80/20,Ridge regression,0.789,17.909,2.249,34.435
+Random 80/20,Random Forest,0.904,17.238,1.293,14.721
+Random 80/20,Gradient Boosting,0.922,17.045,1.08,13.568
+"Future years (train <=2015, test 2016-2020)",Baseline: crop median,0.723,9.768,2.375,35.327
+"Future years (train <=2015, test 2016-2020)",Ridge regression,0.798,9.389,2.169,33.907
+"Future years (train <=2015, test 2016-2020)",Random Forest,0.888,8.505,1.498,18.493
+"Future years (train <=2015, test 2016-2020)",Gradient Boosting,0.923,7.574,1.16,16.831

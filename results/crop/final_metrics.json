@@ -1,0 +1,46 @@
+{
+ "final": {
+  "model": "Random Forest (tuned)",
+  "params": {
+   "max_depth": 12,
+   "min_samples_leaf": 1,
+   "n_estimators": 50
+  },
+  "test_accuracy": 0.9954545454545455,
+  "test_precision_macro": 0.9956709956709957,
+  "test_recall_macro": 0.9954545454545454,
+  "test_f1_macro": 0.9954517027687758,
+  "top3_accuracy": 1.0,
+  "n_train": 1760,
+  "n_test": 440,
+  "cv_best_model": "Naive Bayes",
+  "misclassified": [
+   [
+    "blackgram",
+    "maize"
+   ],
+   [
+    "rice",
+    "jute"
+   ]
+  ],
+  "full_cv_accuracy": 0.9960227272727273
+ },
+ "tuning": {
+  "RandomForest": {
+   "best_params": {
+    "max_depth": 12,
+    "min_samples_leaf": 1,
+    "n_estimators": 50
+   },
+   "cv_accuracy": 0.9960227272727273
+  },
+  "SVM": {
+   "best_params": {
+    "svc__C": 100,
+    "svc__gamma": 0.05
+   },
+   "cv_accuracy": 0.984090909090909
+  }
+ }
+}

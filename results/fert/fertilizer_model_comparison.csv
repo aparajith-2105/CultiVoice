@@ -1,0 +1,11 @@
+Features,Model,CV accuracy,Std,CV macro-F1
+all,Majority-class baseline,0.222,0.023,0.052
+all,Logistic Regression,0.944,0.046,0.876
+all,KNN,0.714,0.104,0.631
+all,Decision Tree,0.849,0.039,0.661
+all,Random Forest,0.948,0.046,0.898
+nutrients only,Majority-class baseline,0.222,0.023,0.052
+nutrients only,Logistic Regression,0.999,0.007,0.998
+nutrients only,KNN,0.994,0.017,0.981
+nutrients only,Decision Tree,0.849,0.039,0.661
+nutrients only,Random Forest,0.998,0.014,0.996
