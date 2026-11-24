@@ -122,7 +122,7 @@ Questions outside the data (pests, diseases, irrigation, subsidies, weather fore
 ## 7. How to run
 
 ### Option A: Use the live website (deployed on Netlify)
-Open the project link: **`https://cultivoice.netlify.app/`** *(replace with your own Netlify link)*.
+Open the project link: **`https://cultivoice.netlify.app/`**.
 Nothing to install. Netlify serves the app over **HTTPS**, which the browser needs for the 🎤 voice input.
 
 ### Option B: Deploy your own copy on Netlify
