@@ -119,26 +119,31 @@ Questions outside the data (pests, diseases, irrigation, subsidies, weather fore
 
 ## 7. How to run
 
-### Option A: Use the live website (deployed on Vercel)
-Open the project link: **`https://<your-project>.vercel.app`** *(replace with your own Vercel link)*.
-Nothing to install. Vercel serves the app over **HTTPS**, which the browser needs for the 🎤 voice input.
+### Option A: Use the live website (deployed on Netlify)
+Open the project link: **`https://<your-site>.netlify.app`** *(replace with your own Netlify link)*.
+Nothing to install. Netlify serves the app over **HTTPS**, which the browser needs for the 🎤 voice input.
 
-### Option B: Deploy your own copy on Vercel
+### Option B: Deploy your own copy on Netlify
 The app is a plain static website (HTML + JavaScript + JSON files), so there is **no build step** and no server.
 
-**Using GitHub (recommended)**
-1. Push the project to a GitHub repository.
-2. On [vercel.com](https://vercel.com) choose **Add New → Project** and import the repository.
-3. Set **Root Directory** to **`frontend`**. This is the important setting, because `index.html` lives in that folder.
-4. Set **Framework Preset** to **Other**, and leave Build Command and Output Directory empty.
-5. Click **Deploy**. You get a `https://….vercel.app` link in about a minute. Every later `git push` redeploys automatically.
+**Easiest: drag and drop**
+1. Go to [app.netlify.com/drop](https://app.netlify.com/drop) (log in if asked).
+2. Drag the **`frontend`** folder (the one containing `index.html`, `chat_parser.js`, `chat_qa.js` and `model/`) onto the page.
+3. In about a minute you get a `https://….netlify.app` link. Under *Site configuration → Change site name* you can pick a nicer name such as `cultivoice`.
+4. To update later, open the site's **Deploys** tab and drag the updated `frontend` folder onto it again.
 
-**Using the Vercel CLI instead**
+**Using GitHub (auto-redeploys on every push)**
+1. Push the project to a GitHub repository.
+2. On Netlify choose **Add new site → Import an existing project** and pick the repository.
+3. Set **Base directory** to `frontend` and **Publish directory** to `frontend`. Leave **Build command** empty.
+4. Click **Deploy**.
+
+**Using the Netlify CLI instead**
 ```
-npm i -g vercel
+npm i -g netlify-cli
+netlify login
 cd frontend
-vercel          # first deploy (answer the prompts, accept the defaults)
-vercel --prod   # publish to the production link
+netlify deploy --dir=. --prod
 ```
 
 Only the `frontend/` folder is deployed. The Python code, datasets and charts are not needed by the website, because the trained models are already exported to `frontend/model/` as JSON.
@@ -162,7 +167,7 @@ node tests/test_chat_qa.mjs         # 84 question tests
 ```
 
 ### If something does not work
-- **Blank page or "failed to load model":** the Vercel Root Directory is not `frontend`, or you opened `index.html` by double-click.
+- **Blank page or "failed to load model":** you deployed the wrong folder (the site must be built from `frontend`, so `index.html` is at the top level), or you opened `index.html` by double-click.
 - **Old version still showing after an update:** hard-refresh with Ctrl+Shift+R.
 - **🎤 not working:** use Chrome or Edge on the HTTPS link; some browsers (for example Firefox) do not support voice input.
 
