@@ -20,7 +20,7 @@ need English, and need typing in a form.
 | Nitrogen, Phosphorus, Potassium | A **fertilizer** suggestion |
 | Any question in plain words | An answer taken from the project's own data |
 
-Everything works in **English, Hindi and Tamil**, supports **voice input and read-aloud**, and runs **fully offline in the browser** (no server, no API key).
+Everything works in **English, Hindi and Tamil**, supports **voice input and read-aloud**, and runs **entirely in the browser** (no backend server, no API key), so it can be hosted as a simple static website.
 
 ---
 
@@ -119,24 +119,52 @@ Questions outside the data (pests, diseases, irrigation, subsidies, weather fore
 
 ## 7. How to run
 
-### Run the web app (no Python needed)
-The app loads its model files with `fetch`, so it must be served over http. Double-clicking `index.html` will **not** work.
+### Option A: Use the live website (deployed on Vercel)
+Open the project link: **`https://<your-project>.vercel.app`** *(replace with your own Vercel link)*.
+Nothing to install. Vercel serves the app over **HTTPS**, which the browser needs for the 🎤 voice input.
 
-- **VS Code:** install the **Live Server** extension → right-click `frontend/index.html` → *Open with Live Server*.
-- **Or terminal:** `cd frontend` → `python -m http.server 8000` → open http://localhost:8000
+### Option B: Deploy your own copy on Vercel
+The app is a plain static website (HTML + JavaScript + JSON files), so there is **no build step** and no server.
+
+**Using GitHub (recommended)**
+1. Push the project to a GitHub repository.
+2. On [vercel.com](https://vercel.com) choose **Add New → Project** and import the repository.
+3. Set **Root Directory** to **`frontend`**. This is the important setting, because `index.html` lives in that folder.
+4. Set **Framework Preset** to **Other**, and leave Build Command and Output Directory empty.
+5. Click **Deploy**. You get a `https://….vercel.app` link in about a minute. Every later `git push` redeploys automatically.
+
+**Using the Vercel CLI instead**
+```
+npm i -g vercel
+cd frontend
+vercel          # first deploy (answer the prompts, accept the defaults)
+vercel --prod   # publish to the production link
+```
+
+Only the `frontend/` folder is deployed. The Python code, datasets and charts are not needed by the website, because the trained models are already exported to `frontend/model/` as JSON.
+
+### Option C: Run it on your own computer
+The page loads its model files with `fetch`, so it must be served over http. Double-clicking `index.html` will **not** work.
+- **VS Code:** install the **Live Server** extension, right-click `frontend/index.html`, choose *Open with Live Server*.
+- **Or terminal:** `cd frontend`, then `python -m http.server 8000`, then open http://localhost:8000
 
 ### Re-run the whole analysis (optional, about 2 minutes)
 ```
 pip install -r requirements.txt
 python src/run_all.py
 ```
-This regenerates the charts in `results/`, retrains the models, re-exports them to `frontend/model/`, and (if Node.js is installed) checks that JavaScript matches Python. Results are reproducible (random seed 42).
+This regenerates the charts in `results/`, retrains the models, re-exports them to `frontend/model/`, and (if Node.js is installed) checks that JavaScript matches Python. Results are reproducible (random seed 42). If you retrain, redeploy so the website gets the new model files.
 
 ### Run the tests (needs Node.js)
 ```
 node tests/test_chat_parser.mjs     # 26 value-message tests
 node tests/test_chat_qa.mjs         # 84 question tests
 ```
+
+### If something does not work
+- **Blank page or "failed to load model":** the Vercel Root Directory is not `frontend`, or you opened `index.html` by double-click.
+- **Old version still showing after an update:** hard-refresh with Ctrl+Shift+R.
+- **🎤 not working:** use Chrome or Edge on the HTTPS link; some browsers (for example Firefox) do not support voice input.
 
 ---
 
