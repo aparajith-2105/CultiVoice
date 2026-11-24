@@ -3,7 +3,8 @@
 **An Explainable, Multilingual AI Assistant for Crop and Yield Recommendation**
 
 End-semester project for *Fundamentals of AI using Agriculture DataSets* (IIT Ropar × Annam.ai).
-**Live-Demo**:https://cultivoice.netlify.app/
+
+**Demo**:https://cultivoice.netlify.app/
 
 ---
 
